@@ -1,17 +1,39 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createStore } from "redux";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const addButton = document.getElementById("add");
+const minusButton = document.getElementById("minus");
+const counter = document.querySelector("span");
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const PLUS = "PLUS";
+const MINUS = "MINUS";
+
+/** store data를 modify하는 함수, reducer
+ * useState()를 예로 들면, setState와 같은 역할
+ */
+const reducer = (count = 0, action) => {
+  switch (action.type) {
+    case PLUS:
+      return count + 1;
+    case MINUS:
+      return count - 1;
+    default:
+      return count;
+  }
+};
+
+const store = createStore(reducer);
+
+const repaintCount = () => {
+  counter.innerText = store.getState();
+};
+
+store.subscribe(() => {
+  repaintCount();
+});
+
+addButton.addEventListener("click", () => {
+  store.dispatch({ type: PLUS });
+});
+minusButton.addEventListener("click", () => {
+  store.dispatch({ type: MINUS });
+});
